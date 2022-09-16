@@ -261,18 +261,8 @@ if ($data = json_decode($json)) {
                     // Результаты в группе
                     if ($groupResults = $db->select($sql)) {
                         foreach ($groupResults as $groupResult) {
-                            // Участник ещё на дистанции
-                            if (is_null($groupResult->datetime_finish)) {
-                                if ($resultsStage['status']) {
-                                    $resultsStage['running']++;
-                                    // Может опередить (не достигнут максимум очков, либо время бегущего меньше)
-                                    if (($tmpMaxPoints > $points) || (time() - datetimestamp($groupResult->datetime_start) < $result))
-                                        $resultsStage['outrun']++;
-                                }
-                                continue;
-                            }
                 
-                            if ($groupResult->result_status) {
+                            if ($groupResult->result_status && $groupResult->result_points) {
                                 // Счётчик места
                                 $tmpPlace++;
                 
@@ -318,8 +308,6 @@ if ($data = json_decode($json)) {
                                 if ($resultsStage['status']) {
                                     $resultsStage['place'] = $tmpPlaceLast;
                                     $resultsStage['result'] = $groupResult->result_points . ' КП, ' . sectime($groupResult->result_time);
-                                    if ($resultsStage['length'] > 0)
-                                        $resultsStage['speed'] = secspeed(ceil($groupResult->result_time / $resultsStage['length'] * 1000));
                 
                                     // Добивка для титров если место выше 5
                                     if ($tmpPlace > 4) {
@@ -446,18 +434,8 @@ if ($data = json_decode($json)) {
                     // Результаты в группе
                     if ($groupResults = $db->select($sql)) {
                         foreach ($groupResults as $groupResult) {
-                            // Участник ещё на дистанции
-                            if (is_null($groupResult->datetime_finish)) {
-                                if ($resultsStage['status']) {
-                                    $resultsStage['running']++;
-                                    // Может опередить (не достигнут максимум очков, либо время бегущего меньше)
-                                    if (($tmpMaxPoints > $points) || (time() - datetimestamp($groupResult->datetime_start) < $result))
-                                        $resultsStage['outrun']++;
-                                }
-                                continue;
-                            }
                 
-                            if ($groupResult->result_status) {
+                            if ($groupResult->result_status && $groupResult->result_points) {
                                 // Счётчик места
                                 $tmpPlace++;
                 

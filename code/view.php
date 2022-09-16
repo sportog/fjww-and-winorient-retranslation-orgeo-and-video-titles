@@ -20,15 +20,15 @@ if (is_dir($dir)) {
     $i = 0;
     foreach ($files as $file) {
         $file_ar = explode('.', $file);
-	$file_request = $dir . '/request/' . $file;
-	$file_response = $dir . '/response/' . $file;
-        if (!is_dir($file_request)) {
+        $file_request = $dir . '/request/' . $file;
+        $file_response = $dir . '/response/' . $file;
+        if (!is_dir($file_request) && !in_array($file , ['.gitkeep', '.gitignore'])) {
             $request = file_get_contents($file_request);
             $response = null;
             if (file_exists($file_response))
                 $response = json_decode(file_get_contents($file_response));
-       	    echo '<tr><td>' . date('d.m.Y H:i:s', $file_ar[0]) . '</td><td>' . $request . '</td><td>' . ($response ? $response->code : '-' ) . '</td><td>' . ($response ? ($response->body . '<br><small>' . $response->url . '</small>' ) : '-' ) . '</td></td>';
-	}
+            echo '<tr><td>' . date('d.m.Y H:i:s', $file_ar[0]) . '</td><td>' . $request . '</td><td>' . ($response ? $response->code : '-' ) . '</td><td>' . ($response ? ($response->body . '<br><small>' . $response->url . '</small>' ) : '-' ) . '</td></td>';
+        }
     }
 }
 echo '</tbody></table>';
