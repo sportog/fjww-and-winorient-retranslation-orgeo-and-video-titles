@@ -1,0 +1,830 @@
+
+<!doctype html>
+<html lang="en" class="h-100">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+
+    
+
+<link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+        }
+        .small, small {
+            font-size: .7em;
+        }
+        .comment {
+            font-size: .5em;
+            margin-top: -1px;
+        }
+        .lh-08 {
+            line-height: 0.8!important;
+        }
+        .lh-09 {
+            line-height: 0.9!important;
+        }
+        .bg-grey {
+            background-color: rgb(66, 66, 66);
+        }
+        .bg-darkgreen {
+            background-color: darkgreen;
+        }
+        .bg-darkdarkgreen {
+            background-color: #003800;
+        }
+        .bg-blue {
+            background-color: #000095;
+            border: 1px solid #ffffff69;
+            width: 32px;
+            font-weight: normal;
+        }
+        .bg-purple {
+            background-color: #930095;
+            border: 1px solid #ffffff69;
+            width: 32px;
+            font-weight: normal;
+        }
+        .bg-red {
+            background-color: #950000;
+            border: 1px solid #ffffff69;
+            width: 32px;
+            font-weight: normal;
+        }
+        .bg-yellow {
+            background-color: #bdaa00;
+            border: 1px solid #ffffff69;
+            width: 46px;
+            margin-right: 3px;
+            font-weight: normal;
+        }
+        .va-super {
+            vertical-align: super;
+        }
+        .novisible {
+            opacity: 0;
+            display: none;
+        }
+
+        #resultDay, #resultTotal, #resultTeam {
+            animation: fadeInAnimation ease 0.5s;
+        }
+
+        #resultFinish > content > div:nth-child(odd) {
+            animation: fadeBottom ease 0.5s;
+        }
+
+        #resultFinish > content > div:nth-child(even) {
+            animation: fadeBottom2 ease 0.5s;
+        }
+
+        #resultFinish > content > div:first-child {
+            animation: fadeInLeft ease 0.5s;
+        }
+        
+        @keyframes fadeInAnimation {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+        @keyframes fadeInLeft {
+            0% {
+                opacity: 0;
+                transform: translateX(-50%);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        } 
+        @keyframes fadeBottom {
+            0% {
+                transform: translateY(-35px);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        } 
+        @keyframes fadeBottom2 {
+            0% {
+                transform: translateY(-35px);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        } 
+        @keyframes fadeOutBottom {
+            0% {
+                opacity: 1;
+                transform: translateY(-35px);
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 0;
+            }
+        }
+        @keyframes T-animation {
+            0% {
+                transform: translate(0vh, 100vh);
+            }
+            100% {
+                transform: translate(0vh, 90vh);
+            }
+        }
+
+        table.table-striped > tr:nth-child(odd) {
+            background: #efefef;
+        }
+        #pills-finish, #competitorsList {
+            color:white;
+        }
+    </style>
+  </head>
+  <body class="d-flex flex-column h-100">
+    
+<main class="flex-shrink-0">
+  <div class="container-fluid">
+    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="pills-messages-tab" data-bs-toggle="pill" data-bs-target="#pills-messages" type="button" role="tab" aria-controls="pills-messages" aria-selected="true">Сообщения</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="pills-finish-tab" data-bs-toggle="pill" data-bs-target="#pills-finish" type="button" role="tab" aria-controls="pills-finish" aria-selected="false">Финиш</button>
+        </li>
+        <li class="nav-item" role="presentation" style="display:none;">
+          <button class="nav-link" id="pills-competitors-tab" data-bs-toggle="pill" data-bs-target="#pills-competitors" type="button" role="tab" aria-controls="pills-competitors" aria-selected="false">Участники</button>
+        </li>
+      </ul>
+      <div class="tab-content" id="pills-tabContent">
+        <div class="tab-pane fade show active" id="pills-messages" role="tabpanel" aria-labelledby="pills-messages-tab" tabindex="0">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Введите сообщение..." aria-label="Введите сообщение..." id="messageInput">
+                <button class="btn btn-outline-secondary" type="button" id="messageSend">Отправить</button>
+                <button class="btn btn-outline-danger d-none" type="button" id="messageCancel">Отменить</button>
+            </div>
+            <table class="table table-striped" id="messageList"></table>
+        </div>
+        <div class="tab-pane fade" id="pills-finish" role="tabpanel" aria-labelledby="pills-finish-tab" tabindex="0">
+            <button class="btn btn-primary mb-3" id="finishTest">Тест</button>
+            <button class="btn btn-primary mb-3" id="finishClear">Очистить</button>
+            <button class="btn btn-primary mb-3" id="finishToggle">Скрыть/Показать</button>
+            <div class="row">
+                <div class="col-6" id="resultFinish">
+                    <div class="row">
+                        <div class="col-auto">
+                            <div class="bg-darkgreen px-2 py-1 pe-5 fw-bold">
+                                Финиш:
+                            </div>
+                        </div>
+                    </div>
+                    <content></content>
+                </div>
+                <div class="col-6">
+                    <div class="row justify-content-end">
+                        <div class="col-6 novisible" id="resultDay"></div>
+                        <div class="col-6 novisible" id="resultTotal"></div>
+                        <div class="col-6 novisible" id="resultTeam"></div>
+                    </div>
+                </div>
+              </div>
+        </div>
+        <div class="tab-pane fade" id="pills-competitors" role="tabpanel" aria-labelledby="pills-competitors-tab" tabindex="0">
+            <div style="width: 100px; display: inline-block;">
+                <input type="text" class="form-control" placeholder="Введите ID..." aria-label="Введите ID..." id="competitorsStageId">
+            </div>
+            <button class="btn btn-primary mb-1" id="competitorsLoading">Загрузить</button>
+            <div style="width: 200px; display: inline-block;">
+                <select class="form-select" aria-label="Выберите группу" id="competitorsSelectGroup"></select>
+            </div>
+            <button class="btn btn-primary mb-1" id="competitorsSend">Отправить в трансляцию</button>
+            <button class="btn btn-primary mb-1" id="competitorsClear">Убрать из трансляции</button>
+            <content id="competitorsList"></content>
+        </div>
+      </div>
+  </div>
+</main>
+
+<script src="js/jquery-3.6.0.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script>
+    let html = html_day = html_total = html_team = '';
+
+    let template_finish = {
+        day: '<div class="bg-darkdarkgreen mt-1 px-2 py-1">\
+            <div class="row">\
+                <div class="col-6 lh-08">\
+                    <div class="d-inline-block va-super"><span class="badge bg-yellow">#number#</span></div>\
+                    <div class="d-inline-block"><span class="fw-semibold">#fullname#</span><br /><small>#team_name#</small></div>\
+                </div>\
+                <div class="col-2 text-end">\
+                    <span class="badge bg-secondary align-text-bottom w-100">#group_fullname#</span>\
+                </div>\
+                <div class="col-4 text-end">\
+                    <span class="lh-sm fs-5">#day.result#</span> <span class="badge bg-blue align-text-bottom">#day.place#</span>\
+                </div>\
+            </div>\
+        </div>',
+        total: '<div class="bg-darkdarkgreen mt-1 px-2 py-1">\
+            <div class="row">\
+                <div class="col-6 lh-08">\
+                    <div class="d-inline-block va-super"><span class="badge bg-yellow">#number#</span></div>\
+                    <div class="d-inline-block"><span class="fw-semibold">#fullname#</span><br /><small>#team_name#</small></div>\
+                </div>\
+                <div class="col-2 text-end">\
+                    <span class="badge bg-secondary align-text-bottom w-100">#group_fullname#</span>\
+                </div>\
+                <div class="col-2 text-end">\
+                    <span class="lh-sm fs-5">#day.result#</span> <span class="badge bg-red align-text-bottom">#day.place#</span>\
+                </div>\
+                <div class="col-2 text-end">\
+                    <span class="lh-sm fs-5">#total.result#</span> <span class="badge bg-blue align-text-bottom">#total.place#</span>\
+                </div>\
+            </div>\
+        </div>',
+        team: '<div class="bg-darkdarkgreen mt-1 px-2 py-1">\
+            <div class="row">\
+                <div class="col-6 lh-08">\
+                    <div class="d-inline-block va-super"><span class="badge bg-yellow">#number#</span></div>\
+                    <div class="d-inline-block"><span class="fw-semibold">#fullname#</span><br /><small>#team_name#</small></div>\
+                </div>\
+                <div class="col-2 text-end">\
+                    <span class="badge bg-secondary align-text-bottom w-100">#group_fullname#</span>\
+                </div>\
+                <div class="col-2 text-end">\
+                    <span class="lh-sm fs-5">#day.result#</span> <span class="badge bg-red align-text-bottom">#day.place#</span>\
+                </div>\
+                <div class="col-2 text-end">\
+                    <span class="lh-sm fs-5">#team.result#</span> <span class="badge bg-purple align-text-bottom">#team.place#</span>\
+                </div>\
+            </div>\
+        </div>',
+    };
+    let template_day = '<div class="#classcolor# mt-1 px-2 py-1">\
+        <div class="row">\
+            <div class="col-7 lh-08">\
+                <span class="fw-semibold">#fullname#</span><br /><small>#team_name#</small>\
+            </div>\
+            <div class="col-5 text-end">\
+                <span class="lh-sm fs-5">#result#</span> <span class="badge bg-blue align-text-bottom">#place#</span>\
+            </div>\
+        </div>\
+    </div>';
+    let template_total = '<div class="#classcolor# mt-1 px-2 py-1">\
+        <div class="row">\
+            <div class="col-7 lh-08">\
+                <span class="fw-semibold">#fullname#</span><br /><small>#team_name#</small>\
+            </div>\
+            <div class="col-5 text-end">\
+                <span class="lh-sm fs-5">#result#</span> <span class="badge bg-blue align-text-bottom">#place#</span>\
+            </div>\
+        </div>\
+    </div>';
+    let template_team = '<div class="#classcolor# mt-1 px-2 py-1">\
+        <div class="row">\
+            <div class="col-7">\
+                <span class="fw-semibold">#team_name#</span>\
+            </div>\
+            <div class="col-5 text-end">\
+                <span class="lh-sm fs-5">#result#</span> <span class="badge bg-purple align-text-bottom">#place#</span>\
+            </div>\
+        </div>\
+    </div>';
+    let chat_message = '<tr><td>#message#</td></tr>';
+</script>
+<script src="js/socket.io.js"></script>
+
+<script>
+    let i = 0;
+    let finishTestInterval;
+    var socket = io('http://localhost:3000');
+
+    let data;
+
+    socket.on('finish', function (msg) {
+        if (msg == 'test') {
+            finishTest();
+        }
+        else if (msg == 'clear') {
+            finishClear();
+        }
+        else if (msg == 'toggle') {
+            finishToggle();
+        }
+        else {
+            finishView(JSON.parse(msg));
+        }
+    });
+
+    function finishToggle() {
+        $('footer').toggleClass('d-none');
+    }
+
+    function finishClear() {
+        i = 0;
+        $('footer').toggleClass('d-none', true);
+        $('#resultFinish > content').empty();
+        $('#resultDay').empty().toggleClass('novisible', true);
+        $('#resultTotal').empty().toggleClass('novisible', true);
+        $('#resultTeam').empty().toggleClass('novisible', true);
+        clearInterval(finishTestInterval);
+    }
+
+    function finishTest() {
+        $('#resultFinish > content').empty();
+        $('#resultDay').empty().toggleClass('novisible', true);
+        $('#resultTotal').empty().toggleClass('novisible', true);
+        $('#resultTeam').empty().toggleClass('novisible', true);
+        i = 0;
+        let tmp = {
+            stage: [
+                {
+                    fullname: 'Александров Александр',
+                    team_name: 'Смоленская область',
+                    result: '0:50:00',
+                    place: '1',
+                    number: '11',
+                },
+                {
+                    fullname: 'Иванов Иван',
+                    team_name: 'Смоленская область',
+                    result: '0:55:00',
+                    place: '2',
+                    number: '9',
+                },
+                {
+                    fullname: 'Мухаметдинов Альберт',
+                    team_name: 'Краснодарский край',
+                    result: '1:00:00',
+                    place: '3',
+                    number: '7',
+                },
+                {
+                    fullname: 'Сидоров Вячеслав',
+                    team_name: 'город Санкт-Петербург',
+                    result: '1:05:00',
+                    place: '4',
+                    number: '190',
+                },
+                {
+                    fullname: 'Венедиктов Вениамин',
+                    team_name: 'Рязанская область',
+                    result: '1:10:00',
+                    place: '5',
+                    number: '4321',
+                },
+            ],
+            total: [
+                {
+                    fullname: 'Александров Александр',
+                    team_name: 'Смоленская область',
+                    result: '3:10:00',
+                    place: '1',
+                    number: '11',
+                },
+                {
+                    fullname: 'Мухаметдинов Альберт',
+                    team_name: 'Краснодарский край',
+                    result: '3:20:00',
+                    place: '2',
+                    number: '7',
+                },
+                {
+                    fullname: 'Сидоров Вячеслав',
+                    team_name: 'город Санкт-Петербург',
+                    result: '3:30:00',
+                    place: '3',
+                    number: '190',
+                },
+                {
+                    fullname: 'Венедиктов Вениамин',
+                    team_name: 'Рязанская область',
+                    result: '3:50:00',
+                    place: '9',
+                    number: '4321',
+                },
+                {
+                    fullname: 'Иванов Иван',
+                    team_name: 'Смоленская область',
+                    result: '3:55:00',
+                    place: '10',
+                    number: '9',
+                },
+            ],
+            team: [
+                {
+                    team_name: 'Смоленская область',
+                    team_id: '67',
+                    result: '3:10:00',
+                    place: '1',
+                },
+                {
+                    team_name: 'Краснодарский край',
+                    team_id: '23',
+                    result: '3:20:00',
+                    place: '2',
+                },
+                {
+                    team_name: 'город Санкт-Петербург',
+                    team_id: '78',
+                    result: '3:30:00',
+                    place: '3',
+                },
+                {
+                    team_name: 'Рязанская область',
+                    team_id: '62',
+                    result: '3:50:00',
+                    place: '4',
+                },
+                {
+                    team_name: 'Ростовская область',
+                    team_id: '61',
+                    result: '3:55:00',
+                    place: '5',
+                },
+            ]
+        };
+        let result = [
+                {
+                    competitor: {
+                        fullname: 'Венедиктов Вениамин',
+                        team_name: 'Рязанская область',
+                        team_id: '62',
+                        group_fullname: 'Мужчины',
+                        number: '4321',
+                    },
+                    results: {
+                        stage: {
+                            result: '1:10:00',
+                            place: '1',
+                            list: tmp.stage,
+                        },
+                        total: {
+                            result: '3:50:00',
+                            place: '6',
+                            list: tmp.total,
+                        },
+                    },
+                },
+                {
+                    competitor: {
+                        fullname: 'Мухаметдинов Альберт',
+                        team_name: 'Краснодарский край',
+                        team_id: '23',
+                        group_fullname: 'Мужчины',
+                        number: '7',
+                    },
+                    results: {
+                        stage: {
+                            result: '1:00:00',
+                            place: '1',
+                            list: tmp.stage,
+                        },
+                        total: {
+                            result: '3:20:00',
+                            place: '1',
+                            list: tmp.total,
+                        },
+                    },
+                },
+                {
+                    competitor: {
+                        fullname: 'Смирнов Максим',
+                        team_name: 'Смоленская область',
+                        team_id: '67',
+                        group_fullname: 'Мальчики до 13 лет',
+                        number: '99',
+                    },
+                    results: {
+                        stage: {
+                            result: '0:55:00',
+                            place: '2',
+                            list: tmp.stage,
+                        },
+                        team: {
+                            result: '3:55:00',
+                            place: '10',
+                            list: tmp.team,
+                        },
+                    },
+                },
+                {
+                    competitor: {
+                        fullname: 'Александров Александр',
+                        team_name: 'Смоленская область',
+                        team_id: '67',
+                        group_fullname: 'Мужчины',
+                        number: '11',
+                    },
+                    results: {
+                        stage: {
+                            result: '0:50:00',
+                            place: '1',
+                            list: tmp.stage,
+                        },
+                        total: {
+                            result: '3:10:00',
+                            place: '1',
+                            list: tmp.total,
+                        },
+                    },
+                },
+                {
+                    competitor: {
+                        fullname: 'Сидоров Вячеслав',
+                        team_name: 'город Санкт-Петербург',
+                        team_id: '78',
+                        group_fullname: 'Мужчины',
+                        number: '190',
+                    },
+                    results: {
+                        stage: {
+                            result: '1:05:00',
+                            place: '3',
+                            list: tmp.stage,
+                        },
+                        total: {
+                            result: '3:30:00',
+                            place: '3',
+                            list: tmp.total,
+                        },
+                    },
+                },
+                {
+                    competitor: {
+                        fullname: 'Ананенко Ангелина',
+                        team_name: 'Смоленская область',
+                        team_id: '67',
+                        group_fullname: 'Юниорки до 21 года',
+                        number: '999',
+                    },
+                    results: {
+                        stage: {
+                            result: '0:55:00',
+                            place: '2',
+                            list: tmp.stage,
+                        },
+                    },
+                },
+                {
+                    competitor: {
+                        fullname: 'Иванов Иван',
+                        team_name: 'Смоленская область',
+                        team_id: '67',
+                        group_fullname: 'Мужчины',
+                        number: '9',
+                    },
+                    results: {
+                        stage: {
+                            result: '0:55:00',
+                            place: '2',
+                            list: tmp.stage,
+                        },
+                        total: {
+                            result: '3:55:00',
+                            place: '10',
+                            list: tmp.total,
+                        },
+                    },
+                },
+        ];
+
+        clearInterval(finishTestInterval)
+        finishTestInterval = setInterval(() => {
+            finishView(result[i]);
+            i++;
+            if (i > 6)
+                i = 0;
+        }, 5000)
+    }
+
+    function finishView(el) {
+            if (i == 0)
+                $('footer').toggleClass('d-none', false);
+            $('#resultFinish > content > div').toggleClass('bg-darkdarkgreen', false).toggleClass('bg-darkgreen', true);
+            let resultDay = $('#resultDay')
+            resultDay.empty().toggleClass('novisible', true);
+            let resultTotal = $('#resultTotal')
+            resultTotal.empty().toggleClass('novisible', true);
+            let resultTeam = $('#resultTeam')
+            resultTeam.empty().toggleClass('novisible', true);
+            
+            let el_template = 'day';
+            if (typeof el.results?.total?.result != 'undefined' && typeof el.results?.total?.place != 'undefined')
+                el_template = 'total';
+            else if (typeof el.results?.team?.result != 'undefined' && typeof el.results?.team?.place != 'undefined')
+                el_template = 'team';
+            html = template_finish[el_template].replace('#fullname#', el.competitor.fullname).replace('#team_name#', el.competitor.team_name).replace('#group_fullname#', el.competitor.group_fullname).replace('#number#', el.competitor.number).replace('#comment#', el.competitor.comment).replace('#day.result#', el.results?.stage?.result).replace('#day.place#', el.results?.stage?.place != '0' ? el.results?.stage?.place : '-').replace('#total.result#', el.results?.total?.result).replace('#total.place#', el.results?.total?.place != '0' ? el.results?.total?.place : '-').replace('#team.result#', el.results?.team?.result).replace('#team.place#', el.results?.team?.place != '0' ? el.results?.team?.place : '-');
+            $('#resultFinish > content').prepend(html);
+
+            if (typeof el.results?.stage?.list != 'undefined') {
+                html_day = '<div class="row">\
+                    <div class="col-auto">\
+                        <div class="bg-darkgreen px-2 py-1 pe-5 fw-bold">\
+                            ' + el.competitor.group_fullname + ':\
+                        </div>\
+                    </div>\
+                </div>';
+                el.results.stage.list.forEach(e => {
+                    html_day += template_day.replace('#fullname#', e.fullname).replace('#team_name#', e.team_name).replace('#comment#', e.comment).replace('#result#', e.result).replace('#place#', e.place != '0' ? e.place : '-').replace('#classcolor#', el.competitor.number == e.number ? 'bg-darkdarkgreen' : 'bg-darkgreen');
+                });
+                setTimeout(() => {resultDay.html(html_day).toggleClass('novisible', false);}, 1);
+            }
+            
+            if (typeof el.results?.total?.list != 'undefined') {
+                html_total = '<div class="row">\
+                    <div class="col-auto">\
+                        <div class="bg-darkgreen px-2 py-1 pe-5 fw-bold">\
+                            ' + el.competitor.group_fullname + ' (сумма):\
+                        </div>\
+                    </div>\
+                </div>';
+                el.results.total.list.forEach(e => {
+                    html_total += template_total.replace('#fullname#', e.fullname).replace('#team_name#', e.team_name).replace('#result#', e.result).replace('#place#', e.place != '0' ? e.place : '-').replace('#classcolor#', el.competitor.number == e.number ? 'bg-darkdarkgreen' : 'bg-darkgreen');
+                });
+                setTimeout(() => {resultTotal.html(html_total).toggleClass('novisible', false);}, 1);
+            }
+            
+            if (typeof el.results?.team?.list != 'undefined') {
+                html_team = '<div class="row">\
+                    <div class="col-auto">\
+                        <div class="bg-darkgreen px-2 py-1 pe-5 fw-bold">\
+                            ' + el.competitor.group_fullname + ' (командные):\
+                        </div>\
+                    </div>\
+                </div>';
+                el.results.team.list.forEach(e => {
+                    html_team += template_team.replace('#team_name#', e.team_name).replace('#result#', e.result).replace('#place#', e.place != '0' ? e.place : '-').replace('#classcolor#', el.competitor.team_id == e.team_id ? 'bg-darkdarkgreen' : 'bg-darkgreen');
+                });
+                setTimeout(() => {resultTeam.html(html_team).toggleClass('novisible', false);}, 1);
+            }
+    }
+    function finishOperation(value) {
+        socket.emit('finish', value);
+    }
+    function messageOperation(value) {
+        let messageSend = $('#messageSend');
+        let messageCancel = $('#messageCancel');
+        let messageInput = $('#messageInput');
+        let messageList = $('#messageList');
+        let message = value ? $('#messageInput').val() : '';
+        messageSend.toggleClass('d-none', value);
+        messageCancel.toggleClass('d-none', !value);
+        messageInput.val(message).prop('disabled', value);
+        socket.emit('chat message', message);
+        if (message)
+            messageList.append(chat_message.replace('#message#', message));
+    }
+    function competitorsLoading() {
+        let stage_id = $('#competitorsStageId').val();
+        $.ajax({
+            url: "http://o.sportog.ru/ajax.php?id=" + stage_id,
+            dataType: "json"
+        })
+        .done(function( json ) {
+            data = json;
+            let html = '<option></option>';
+            data.groups.forEach((el) => {
+                html += '<option value="' + el.id + '">' + el.name + '</option>';
+            })
+            $('#competitorsSelectGroup').html(html)
+        });
+    }
+    function competitorsView() {
+        let group_id = $('#competitorsSelectGroup').val();
+        if (group_id > 0) {
+            let event_stage_ids_result_total = '';
+            data.groups.forEach((el) => {
+                if (el.id == group_id)
+                    event_stage_ids_result_total = el.event_stage_ids_result_total;
+            })
+            let html = '';
+            let sportsmens = [];
+            let t = new Date();
+            let timecurrent = t.getSeconds() + t.getMinutes() * 60 + t.getHours() * 3600;
+            data.competitors.forEach((el) => {
+                if (el.group_id == group_id) {
+                    el.status = el.result > 0
+                    el.result_ = el.result
+                    if (el.status === false)
+                        el.result_ = timecurrent - el.start;
+                    sportsmens.push(el)
+                }
+            })
+            sportsmens.sort(function(a, b) {
+                return a.result_ - b.result_;
+            });
+            html = '<div class="row">\
+                    <div class="col-auto">\
+                        <div class="bg-darkgreen px-2 py-1 pe-5 fw-bold">\
+                            Результаты:\
+                        </div>\
+                    </div>\
+                </div>';
+                sportsmens.forEach(e => {
+                    html += template_day.replace('#fullname#', e.fullname).replace('#team_name#', e.team_name).replace('#result#', seconds_to_time(e.result_)).replace('#place#', e.place > 0 ? e.place : '-').replace('#classcolor#', e.status ? 'bg-darkgreen' : 'bg-grey');
+                });
+            if (event_stage_ids_result_total != '') {
+
+                html = '<div class="row"><div class="col-6">' + html + '</div><div class="col-6"><div class="row">\
+                    <div class="col-auto">\
+                        <div class="bg-darkgreen px-2 py-1 pe-5 fw-bold">\
+                            Сумма:\
+                        </div>\
+                    </div>\
+                </div>';
+                sportsmens = [];
+                data.competitors.forEach((el) => {
+                    if (el.group_id == group_id) {
+                        el.status = el.result > 0
+                        el.result_ = el.result * 1 + (el?.total?.result_total_time ? (el?.total?.result_total_time * 1) : 0);
+                        el.result_total_stages = el?.total?.result_total_stages ? (el?.total?.result_total_stages * 1) : 0;
+                        if (el.status === false)
+                            el.result_ = timecurrent - el.start + (el?.total?.result_total_time ? (el?.total?.result_total_time * 1) : 0);
+                        sportsmens.push(el)
+                    }
+                })
+                sportsmens.sort(function(a, b) {
+                    if (a.result_total_stages != b.result_total_stages)
+                        return b.result_total_stages - a.result_total_stages;
+                    return a.result_ - b.result_;
+                });
+                sportsmens.forEach(e => {
+                    html += template_day.replace('#fullname#', e.fullname).replace('#team_name#', e.team_name).replace('#result#', seconds_to_time(e.result_)).replace('#place#', '-').replace('#classcolor#', e.status ? 'bg-darkgreen' : 'bg-grey');
+                });
+                html += '</div></div>';
+            }
+            $('#competitorsList').html(html)
+        }
+        else
+            $('#competitorsList').empty()
+        setTimeout(() => {
+            competitorsView()
+        }, 1000);
+    }
+    function competitorsSend() {
+        let group_id = $('#competitorsSelectGroup').val();
+        let group_name = '';
+        if (group_id > 0) {
+            data.groups.forEach((el) => {
+                if (el.id == group_id)
+                    group_name = el.fullname;
+            })
+            let sportsmens = [];
+            let t = new Date();
+            let timecurrent = t.getSeconds() + t.getMinutes() * 60 + t.getHours() * 3600;
+            data.competitors.forEach((el) => {
+                if (el.group_id == group_id) {
+                    el.status = el.result > 0
+                    el.result_ = el.result
+                    if (el.status === false)
+                        el.result_ = timecurrent - el.start;
+                    sportsmens.push(el)
+                }
+            })
+            sportsmens.sort(function(a, b) {
+                return a.result_ - b.result_;
+            });
+            socket.emit('competitors', JSON.stringify({group: group_name, sportsmens: sportsmens}));
+        }
+    }
+    function competitorsClear() {
+        socket.emit('competitors', 'clear');
+    }
+    function seconds_to_time (seconds) {
+        return new Date(seconds * 1000).toISOString().substr(11, 8);
+    }
+    $(document).on('click', '#messageSend', function() {
+        messageOperation(true)
+    });
+    $(document).on('click', '#messageCancel', function() {
+        messageOperation(false)
+    });
+    $(document).on('click', '#finishTest', function() {
+        finishOperation('test')
+    });
+    $(document).on('click', '#finishClear', function() {
+        finishOperation('clear')
+    });
+    $(document).on('click', '#finishToggle', function() {
+        finishOperation('toggle')
+    });
+    $(document).on('click', '#competitorsLoading', function() {
+        competitorsLoading()
+    });
+    $(document).on('click', '#competitorsSend', function() {
+        competitorsSend()
+    });
+    $(document).on('click', '#competitorsClear', function() {
+        competitorsClear()
+    });
+    competitorsView()
+</script>
+    
+  </body>
+</html>

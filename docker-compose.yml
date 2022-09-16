@@ -1,0 +1,40 @@
+version: '3'
+services:
+  nginx:
+    container_name: nginx
+    build:
+      context: nginx
+    ports:
+      - 8080:80
+    volumes:
+      - ./code:/var/www
+    depends_on:
+      - php-fpm
+    links:
+      - db
+  php-fpm:
+    container_name: php-fpm
+    build:
+      context: php-fpm
+    volumes:
+      - ./code:/var/www
+  db:
+    container_name: db
+    image: mysql:8.0
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
+  redis:
+    container_name: redis
+    image: redis:alpine
+  node:
+    container_name: node
+    build:
+      context: node
+    ports:
+      - 3000:3000
+    links:
+      - redis
