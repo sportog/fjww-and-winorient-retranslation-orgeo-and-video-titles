@@ -1,30 +1,24 @@
 <?
 ini_set('max_execution_time', 600);
 
-$dir = 'logs';
-$filename = time() . '.json';
-
-// Не храним больше 25 логов
-if (is_dir($dir)) {
-    $files = scandir($dir . '/request', 1);
-    $i = 0;
-    foreach ($files as $file) {
-        $i++;
-        if ($i > 25) {
-            @unlink($dir . '/request/' . $file);
-            @unlink($dir . '/response/' . $file);
-        }
-    }
-}
+// База данных
+require_once('database.php');
+$db = new DataBase;
 
 // Получаем данные
 $json = file_get_contents('php://input');
 
-if(!$json)
+// Без данных - ошибочный запрос
+if (!$json)
     die ('empty');
 
-// Логгирование
-file_put_contents($dir . '/request/' . $filename, $json);
+// Логгируем запрос
+$logId = $db->insert("
+INSERT INTO
+    `logs`
+SET
+    `datetime_created` = '" . date('Y-m-d H:i:s', time()) . "',
+    `request_body` = '" . $json . "'");
 
 // Ретрансляция в оргео
 if (isset($_GET['id']) && isset($_GET['sk']) && isset($_GET['sub'])) {
@@ -38,7 +32,15 @@ if (isset($_GET['id']) && isset($_GET['sk']) && isset($_GET['sub'])) {
     $return_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close ($ch);
     // Логгирование
-    file_put_contents($dir . '/response/' . $filename, json_encode(['body' => $return, 'code' => $return_code, 'url' => $url_orgeo]));
+    $db->query("
+    UPDATE
+        `logs`
+    SET
+        `response_body` = '" . $return . "',
+        `response_code` = '" . $return_code . "',
+        `response_url` = '" . $url_orgeo . "'
+    WHERE
+        `id` = '" . $logId . "'");
 }
 
 function response(array $response, int $code = 200)
@@ -92,10 +94,6 @@ try {
 } catch(\RedisException $e) {
     exit('Connect error');
 }
-
-// База данных
-require_once('database.php');
-$db = new DataBase;
 
 if ($data = json_decode($json)) {
     // Данные

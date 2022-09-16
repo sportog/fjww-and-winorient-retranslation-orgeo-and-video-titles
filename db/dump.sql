@@ -42,6 +42,16 @@ CREATE TABLE IF NOT EXISTS `teams` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+CREATE TABLE IF NOT EXISTS `logs` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `datetime_created` datetime NOT NULL,
+  `request_body` text DEFAULT NULL,
+  `response_body` text DEFAULT NULL,
+  `response_code` varchar(3) DEFAULT NULL,
+  `response_url` varchar(1000) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
