@@ -26,7 +26,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
     volumes:
-      - ./db:/docker-entrypoint-initdb.d
+      - ./databases:/var/lib/mysql
   redis:
     container_name: redis
     image: redis:alpine

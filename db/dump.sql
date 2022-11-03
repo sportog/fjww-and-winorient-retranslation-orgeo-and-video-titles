@@ -17,6 +17,8 @@ CREATE TABLE IF NOT EXISTS `competitors` (
   `number` mediumint unsigned NOT NULL,
   `lastname` varchar(50) NOT NULL,
   `firstname` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `rank` tinyint unsigned DEFAULT NULL,
+  `year` year(4) DEFAULT NULL,
   `datetime_start` datetime NOT NULL,
   `datetime_finish` datetime DEFAULT NULL,
   `result_status` tinyint unsigned DEFAULT NULL,
@@ -44,7 +46,8 @@ CREATE TABLE IF NOT EXISTS `teams` (
 
 CREATE TABLE IF NOT EXISTS `logs` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `datetime_created` datetime NOT NULL,
+  `created_at` datetime NOT NULL,
+  `source` varchar(10) DEFAULT NULL,
   `request_body` text DEFAULT NULL,
   `response_body` text DEFAULT NULL,
   `response_code` varchar(3) DEFAULT NULL,

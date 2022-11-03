@@ -1,4 +1,4 @@
-# Ретрансляция финишной отметки из программы FjwW в Orgeo и в видео-титры
+# Ретрансляция финишной отметки из программ FjwW и WinOrient в Orgeo и в видео-титры
 
 Для использования потребуется установка Docker
 https://docs.docker.com/desktop/install/windows-install/
@@ -6,10 +6,11 @@ https://docs.docker.com/desktop/install/windows-install/
 Также может в процессе запуска Docker потребоваться установка на x64 системах пакета обновления ядра Linux
 https://docs.microsoft.com/ru-ru/windows/wsl/install-manual#step-4---download-the-linux-kernel-update-package
 
-Для запуска использовать файл **run.bat**
+Для запуска использовать файл **run.bat** (для Windows) или **run.sh** (для Linux)
+Для остановки использовать файл **stop.bat** (для Windows) или **stop.sh** (для Linux)
 
 **Разделы:**
-- http://localhost:8080/admin.php Лог обращений с FjwW и ответов от Orgeo, а также список участников
+- http://localhost:8080/admin.php Лог обращений с FjwW/WinOrient и ответов от Orgeo, а также список участников
 - http://localhost:8080/stream/index.html Страница с видео-титрами для накладывания в OBS Studio
 - http://localhost:8080/stream/admin.html Страница с возможностью отправлять сообщения в трансляцию и просмотром большего списка последних финишировавших спортсменов
 
@@ -17,4 +18,19 @@ https://docs.microsoft.com/ru-ru/windows/wsl/install-manual#step-4---download-th
 
 Если трансляция в Orgeo не нужна, достаточно указать адрес http://localhost:8080/
 
-P.S. После перезапуска системы обнуляется база данных (список групп, команд, участников и лог)
+P.S. Перед использованием системы необходимо очищать список спортсменов (если это не было сделано после предыдущих соревнований) и выбирать вид спорта
+
+Чтобы WinOrient корректно передавал номер передатчика в Orgeo необходимо запрограммировать станции по следующему принципу:
+31 => 1
+32 => 2
+33 => 3
+34 => 4
+35 => 5
+91 => 1F
+92 => 2F
+93 => 3F
+94 => 4F
+95 => 5F
+50 => B
+40 => K
+100 => S
